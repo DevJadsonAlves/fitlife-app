@@ -1,0 +1,62 @@
+{
+  "name": "FitLife - Dashboard de Hábitos",
+  "short_name": "FitLife",
+  "description": "Dashboard completo para acompanhar seus hábitos saudáveis: água, treinos, alimentação, sono e peso.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060b14",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "categories": ["health", "fitness", "lifestyle"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-72x72_6b8a82ae.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-96x96_ab974f4a.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-128x128_55430b81.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-144x144_86af3ede.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-152x152_13541461.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-192x192_152937d7.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-384x384_75b80086.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663491304457/63jzorqXVxLjq2XFK9aKNy/icon-512x512_df4fd2c6.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
