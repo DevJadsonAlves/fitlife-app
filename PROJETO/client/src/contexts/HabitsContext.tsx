@@ -2913,7 +2913,27 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
       if (notificationKeysRef.current.has(key)) return false;
       notificationKeysRef.current.add(key);
 
-      toast.info(toastMessage || body);
+      const normalizeCopy = (value: string): string => {
+        return value
+          .replace(/â€¢/g, "-")
+          .replace(/â€”/g, "-")
+          .replace(/Ã¡/g, "a")
+          .replace(/Ã£/g, "a")
+          .replace(/Ã§/g, "c")
+          .replace(/Ãª/g, "e")
+          .replace(/Ã©/g, "e")
+          .replace(/Ã³/g, "o")
+          .replace(/Ã­/g, "i")
+          .replace(/\s+/g, " ")
+          .trim();
+      };
+
+      const prettyTitle = normalizeCopy(title).startsWith("FitLife")
+        ? "FitLife"
+        : normalizeCopy(title);
+      const prettyBody = normalizeCopy(body);
+
+      toast.info(toastMessage || prettyBody);
 
       const showSystemNotification = async () => {
         if (typeof window === "undefined") return;
@@ -2924,9 +2944,12 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
           if ("serviceWorker" in navigator) {
             const registration = await navigator.serviceWorker.ready;
             if (registration?.showNotification) {
-              await registration.showNotification(title, {
-                body,
+              await registration.showNotification(prettyTitle, {
+                body: prettyBody,
                 tag: key,
+                icon: "/icon-192x192.png",
+                badge: "/badge-72x72.png",
+                data: { url: "/" },
               });
               return;
             }
@@ -2936,7 +2959,11 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
         }
 
         try {
-          new Notification(title, { body, tag: key });
+          new Notification(prettyTitle, {
+            body: prettyBody,
+            tag: key,
+            icon: "/icon-192x192.png",
+          });
         } catch (error) {
           console.warn("Falha ao enviar notificação do navegador:", error);
         }
