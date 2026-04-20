@@ -2915,9 +2915,34 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
 
       toast.info(toastMessage || body);
 
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(title, { body, tag: key });
-      }
+      const showSystemNotification = async () => {
+        if (typeof window === "undefined") return;
+        if (!("Notification" in window)) return;
+        if (Notification.permission !== "granted") return;
+
+        try {
+          if ("serviceWorker" in navigator) {
+            const registration = await navigator.serviceWorker.ready;
+            if (registration?.showNotification) {
+              await registration.showNotification(title, {
+                body,
+                tag: key,
+              });
+              return;
+            }
+          }
+        } catch (error) {
+          console.warn("Falha ao enviar notificação via Service Worker:", error);
+        }
+
+        try {
+          new Notification(title, { body, tag: key });
+        } catch (error) {
+          console.warn("Falha ao enviar notificação do navegador:", error);
+        }
+      };
+
+      void showSystemNotification();
 
       return true;
     },
@@ -2989,37 +3014,49 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
       await Notification.requestPermission();
     }
 
+    if (!("Notification" in window)) {
+      toast.error("Seu navegador não suporta notificações do sistema.");
+      return;
+    }
+
+    if (Notification.permission !== "granted") {
+      toast.error(
+        "Permissão de notificações não concedida. Ative nas configurações do navegador."
+      );
+      return;
+    }
+
     const templates: Record<NotificationTestType, { title: string; body: string }> = {
       water: {
-        title: "FitLife • Agua",
-        body: "Hora da hidratacao — Beba 300 ml agora.",
+        title: "FitLife - Agua",
+        body: "Hora da hidratacao - Beba 300 ml agora.",
       },
       meal: {
-        title: "FitLife • Refeicoes",
-        body: "Lembrete de refeicao — Planeje a proxima refeicao.",
+        title: "FitLife - Refeicoes",
+        body: "Lembrete de refeicao - Planeje a proxima refeicao.",
       },
       workout: {
-        title: "FitLife • Treino",
-        body: "Treino do dia — Alguns minutos hoje mantem seu streak vivo.",
+        title: "FitLife - Treino",
+        body: "Treino do dia - Alguns minutos hoje mantem seu streak vivo.",
       },
       fasting_start: {
-        title: "FitLife • Jejum",
+        title: "FitLife - Jejum",
         body: "Pronto para iniciar seu jejum no horario planejado?",
       },
       fasting_phase: {
-        title: "FitLife • Fase do Jejum",
+        title: "FitLife - Fase do Jejum",
         body: "Fase avancada alcancada. Continue firme e hidratado.",
       },
       fasting_end: {
-        title: "FitLife • Meta de Jejum",
-        body: "Meta atingida — Deseja encerrar agora?",
+        title: "FitLife - Meta de Jejum",
+        body: "Meta atingida - Deseja encerrar agora?",
       },
       sleep: {
-        title: "FitLife • Sono",
-        body: "Rotina de sono — Hora de desacelerar para dormir melhor.",
+        title: "FitLife - Sono",
+        body: "Rotina de sono - Hora de desacelerar para dormir melhor.",
       },
       daily_summary: {
-        title: "FitLife • Resumo Diario",
+        title: "FitLife - Resumo Diario",
         body: "Seu resumo do dia esta pronto para revisao.",
       },
     };
