@@ -1,10 +1,15 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+﻿import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, CameraOff, X, AlertCircle, Loader2, Sparkles, RotateCcw } from "lucide-react";
 
 interface FormCheckProps {
   exerciseName: string;
   onClose: () => void;
+}
+
+interface FormCheckResponse {
+  feedback?: string;
+  error?: string;
 }
 
 export function FormCheck({ exerciseName, onClose }: FormCheckProps) {
@@ -31,7 +36,7 @@ export function FormCheck({ exerciseName, onClose }: FormCheckProps) {
       }
       setStreaming(true);
     } catch {
-      setCamError("Não foi possível acessar a câmera. Verifique as permissões do navegador.");
+      setCamError("NÃ£o foi possÃ­vel acessar a cÃ¢mera. Verifique as permissÃµes do navegador.");
     }
   }, []);
 
@@ -60,41 +65,23 @@ export function FormCheck({ exerciseName, onClose }: FormCheckProps) {
     setFeedback("");
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/form-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "image",
-                  source: { type: "base64", media_type: "image/jpeg", data: b64 },
-                },
-                {
-                  type: "text",
-                  text: `Você é personal trainer especialista em biomecânica. O usuário está executando: ${exerciseName}.
-
-Analise a imagem e dê feedback CONCISO em português (máx 80 palavras):
-✅ O que está correto na postura/execução
-⚠️ O que precisa de ajuste (se houver)
-💡 Dica principal
-
-Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
-                },
-              ],
-            },
-          ],
+          exerciseName,
+          imageBase64: b64,
         }),
       });
-      const data = await res.json();
-      const text = data.content?.map((c: any) => c.text || "").join("") || "";
-      setFeedback(text || "Não foi possível analisar. Tente novamente.");
+
+      const data = (await res.json()) as FormCheckResponse;
+      if (!res.ok) {
+        throw new Error(data.error || "NÃ£o foi possÃ­vel analisar agora.");
+      }
+
+      setFeedback(data.feedback || "NÃ£o foi possÃ­vel analisar. Tente novamente.");
     } catch {
-      setFeedback("Erro ao conectar com a IA. Verifique sua conexão.");
+      setFeedback("AnÃ¡lise indisponÃ­vel no momento. Tente novamente em instantes.");
     } finally {
       setAnalyzing(false);
     }
@@ -128,7 +115,7 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
               <Camera className="w-3.5 h-3.5 text-orange-500" />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Form Check por Câmera</h3>
+              <h3 className="font-bold text-sm">Form Check por CÃ¢mera</h3>
               <p className="text-[10px] text-muted-foreground">{exerciseName}</p>
             </div>
           </div>
@@ -159,7 +146,7 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
             {!streaming && !captured && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/50">
                 <CameraOff className="w-10 h-10" />
-                <p className="text-xs">Câmera inativa</p>
+                <p className="text-xs">CÃ¢mera inativa</p>
               </div>
             )}
 
@@ -174,7 +161,7 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
                 {/* Center silhouette hint */}
                 <div className="absolute bottom-2 inset-x-0 text-center">
                   <span className="text-[9px] text-white/50 bg-black/40 px-2 py-0.5 rounded">
-                    Posicione-se de modo que o corpo inteiro apareça
+                    Posicione-se de modo que o corpo inteiro apareÃ§a
                   </span>
                 </div>
               </div>
@@ -201,7 +188,7 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
               >
                 <Loader2 className="w-4 h-4 text-orange-500 animate-spin flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-medium">Analisando execução…</p>
+                  <p className="text-xs font-medium">Analisando execuÃ§Ã£oâ€¦</p>
                   <p className="text-[9px] text-muted-foreground">IA verificando postura e alinhamento</p>
                 </div>
               </motion.div>
@@ -232,7 +219,7 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
                 className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
               >
                 <Camera className="w-4 h-4" />
-                Ligar Câmera
+                Ligar CÃ¢mera
               </button>
             )}
 
@@ -279,3 +266,5 @@ Se a imagem não mostrar claramente, dê dicas gerais sobre ${exerciseName}.`,
     </motion.div>
   );
 }
+
+

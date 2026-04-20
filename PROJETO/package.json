@@ -12,6 +12,7 @@
     "deploy:prod": "vercel deploy --prod --yes",
     "vercel:pull:preview": "vercel env pull .env.preview.local --environment=preview",
     "vercel:pull:prod": "vercel env pull .env.production.local --environment=production",
+    "security:check": "node scripts/security-check.mjs",
     "check": "tsc --noEmit",
     "format": "prettier --write ."
   },

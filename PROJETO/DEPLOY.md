@@ -16,6 +16,7 @@ Isso gera uma URL unica de preview no Vercel.
 
 Observacao:
 se o preview nascer sem as variaveis publicas do Supabase, complete o ambiente `Preview` no painel da Vercel com `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`.
+Se quiser usar Form Check com IA de camera, configure tambem `ANTHROPIC_API_KEY` (server-side, sem prefixo `VITE_`).
 
 ## Producao
 
